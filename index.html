@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload de Imagem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        #uploadBtn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        #uploadBtn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h2>Upload de Imagem para Análise</h2>
+    <input type="file" id="imageInput" accept="image/*">
+    <button id="uploadBtn">Enviar Imagem</button>
+    <p id="response"></p>
+
+    <script>
+        document.getElementById("uploadBtn").addEventListener("click", async function() {
+            const fileInput = document.getElementById("imageInput");
+            if (!fileInput.files.length) {
+                alert("Por favor, selecione uma imagem.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append("file", file);
+
+            document.getElementById("response").innerText = "Enviando...";
+
+            try {
+                const response = await fetch("http://localhost:5000/upload", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+                document.getElementById("response").innerText = result.message;
+            } catch (error) {
+                document.getElementById("response").innerText = "Erro no upload.";
+            }
+        });
+    </script>
+</body>
+</html>
